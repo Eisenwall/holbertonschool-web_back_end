@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 """
-Function make_multiplier: returns a function that multiplies a float
-by the given multiplier.
+Function element_length: returns a list of tuples with each element of lst
+and its length.
 """
 
-from typing import Callable
+from typing import Iterable, Sequence, List, Tuple
 
 
-def make_multiplier(multiplier: float) -> Callable[[float], float]:
-    """Return a function that multiplies its argument by multiplier."""
-
-    def nb(n: float) -> float:
-        return n * multiplier
-
-    return nb
+def element_length(lst: Iterable[Sequence]) -> List[Tuple[Sequence, int]]:
+    """Return a list of tuples (element, length of element) from lst."""
+    return [(i, len(i)) for i in lst]
