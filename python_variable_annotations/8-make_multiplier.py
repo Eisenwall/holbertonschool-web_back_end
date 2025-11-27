@@ -9,7 +9,7 @@ from typing import Callable
 
 def make_multiplier(multiplier: float) -> Callable[[float], float]:
     """Return a function that multiplies its argument by multiplier."""
-    
+
     def nb(n: float) -> float:
         return n * multiplier
 
