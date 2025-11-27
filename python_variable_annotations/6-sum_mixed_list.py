@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
-Function sum_list: returns the sum of a list of floats.
+Function sum_mixed_list: returns the sum of a list containing integers and floats.
 """
 
-from typing import List
+from typing import List, Union
 
-# def inp(a: List[float]) -> float:
+# def inp(a: List[Union[float, int]]) -> float:
 #     return sum(a)
 
-
-def sum_list(input_list: List[float]) -> float:
-    """Return the sum of all elements in input_list."""
-    return sum(input_list)
+def inp(a: List[Union[float, int]]) -> float:
+    """Return the sum of all elements in mxd_lst as a float."""
+    return sum(a)
