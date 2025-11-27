@@ -1,2 +1,2 @@
-def in(a, b: int) -> int
+def in(a, b: float) -> float:
     return(a + b)
