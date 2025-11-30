@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
-"""Module 2-measure_runtime
-Measures the average runtime of the wait_n coroutine.
+"""Module 4-tasks
+Contains an asynchronous coroutine task_wait_n that spawns
+task_wait_random n times and returns a list of delays in ascending order.
 """
 
 import asyncio
-import time
-from typing import Any
+from typing import List
 
-wait_n = __import__('1-concurrent_coroutines').wait_n
+task_wait_random = __import__('3-tasks').task_wait_random
 
 
-def measure_time(n: int, max_delay: int) -> float:
-    """Measure the total execution time for wait_n(n, max_delay)
-    and return the average time per coroutine.
+async def task_wait_n(n: int, max_delay: int) -> List[float]:
+    """Spawn task_wait_random n times with the specified max_delay.
+    Return the list of delays in ascending order (without using sort).
     """
-    start = time.perf_counter()
-    asyncio.run(wait_n(n, max_delay))
-    end = time.perf_counter()
-    total_time = end - start
-    return total_time / n
+    tasks = [task_wait_random(max_delay) for _ in range(n)]
+    delays = [await task for task in asyncio.as_completed(tasks)]
+    return delays
