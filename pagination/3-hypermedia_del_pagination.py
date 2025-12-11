@@ -1,62 +1,45 @@
 #!/usr/bin/env python3
 """
-Deletion-resilient hypermedia pagination
+Simple pagination
 """
 
 import csv
-from typing import List, Dict
+from typing import List
+
+
+def index_range(page: int, page_size: int) -> tuple:
+    """Return start and end indexes for a given page"""
+    start = (page - 1) * page_size
+    end = page * page_size
+    return (start, end)
 
 
 class Server:
     """Server class to paginate a database of popular baby names."""
-
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
-        """Initialize dataset caches."""
         self.__dataset = None
-        self.__indexed_dataset = None
 
     def dataset(self) -> List[List]:
-        """Load and cache dataset from CSV (excluding header)."""
+        """Cached dataset"""
         if self.__dataset is None:
-            with open(self.DATA_FILE, newline='') as f:
+            with open(self.DATA_FILE) as f:
                 reader = csv.reader(f)
-                self.__dataset = [row for row in reader][1:]
+                data = [row for row in reader]
+            self.__dataset = data[1:]
+
         return self.__dataset
 
-    def indexed_dataset(self) -> Dict[int, List]:
-        """Return dataset indexed by position for deletion-resilient pagination."""
-        if self.__indexed_dataset is None:
-            data = self.dataset()
-            self.__indexed_dataset = {i: data[i] for i in range(len(data))}
-        return self.__indexed_dataset
+    def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
+        """Return a page of the dataset"""
+        assert isinstance(page, int) and page > 0
+        assert isinstance(page_size, int) and page_size > 0
 
-    def get_hyper_index(self, index: int = 0, page_size: int = 10) -> Dict:
-        """
-        Return a deletion-resilient page starting at `index`.
+        start, end = index_range(page, page_size)
 
-        Args:
-            index (int): starting index for the page
-            page_size (int): number of items in the page
+        data = self.dataset()
+        if start >= len(data):
+            return []
 
-        Returns:
-            Dict: dictionary with keys: index, next_index, page_size, data
-        """
-        assert isinstance(index, int) and isinstance(page_size, int), "index and page_size must be integers"
-        assert 0 <= index < len(self.dataset()), "index out of range"
-
-        indexed_data = self.indexed_dataset()
-        data_page = []
-        next_index = index
-        while len(data_page) < page_size and next_index < len(indexed_data):
-            if next_index in indexed_data:
-                data_page.append(indexed_data[next_index])
-            next_index += 1
-
-        return {
-            "index": index,
-            "next_index": next_index,
-            "page_size": len(data_page),
-            "data": data_page
-        }
+        return data[start:end]
