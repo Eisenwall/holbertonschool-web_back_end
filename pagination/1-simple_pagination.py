@@ -1,8 +1,8 @@
-def get_page(self, p: int = 1, y: int = 10) -> List[List]:
-    assert isinstance(p, int) and p > 0
-    assert isinstance(y, int) and y > 0
-    d = self.dataset()
-    s, e = index_range(p, y)
-    if s >= len(d):
+def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
+    assert isinstance(page, int) and page > 0
+    assert isinstance(page_size, int) and page_size > 0
+    dataset = self.dataset()
+    start, end = index_range(page, page_size)
+    if start >= len(dataset):
         return []
-    return d[s:e]
+    return dataset[start:end]
