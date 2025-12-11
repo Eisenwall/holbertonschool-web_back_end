@@ -1,39 +1,38 @@
 #!/usr/bin/env python3
 """
-Cleaned-up main file for testing get_hyper_index
+Main file
 """
 
 Server = __import__('3-hypermedia_del_pagination').Server
 
 server = Server()
+
 server.indexed_dataset()
 
-# --- Test 1: Out of range ---
 try:
     server.get_hyper_index(300000, 100)
 except AssertionError:
     print("AssertionError raised when out of range")
 
-# Initial parameters
+
 index = 3
 page_size = 2
 
-print("Nb items:", len(server._Server__indexed_dataset))
+print("Nb items: {}".format(len(server._Server__indexed_dataset)))
 
-# --- Test 2: First request ---
+# 1- request first index
 res = server.get_hyper_index(index, page_size)
 print(res)
 
-# --- Test 3: Request using next_index ---
-res_next = server.get_hyper_index(res["next_index"], page_size)
-print(res_next)
+# 2- request next index
+print(server.get_hyper_index(res.get('next_index'), page_size))
 
-# --- Test 4: Delete the first returned index ---
-del server._Server__indexed_dataset[res["index"]]
-print("Nb items:", len(server._Server__indexed_dataset))
+# 3- remove the first index
+del server._Server__indexed_dataset[res.get('index')]
+print("Nb items: {}".format(len(server._Server__indexed_dataset)))
 
-# --- Test 5: Request again initial index (should return different items) ---
+# 4- request again the initial index -> the first data retreives is not the same as the first request
 print(server.get_hyper_index(index, page_size))
 
-# --- Test 6: Request again initial next_index (same as request 3) ---
-print(server.get_hyper_index(res["next_index"], page_size))
+# 5- request again initial next index -> same data page as the request 2-
+print(server.get_hyper_index(res.get('next_index'), page_size))
