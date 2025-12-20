@@ -1,2 +1,2 @@
-#!/usr/bin/env mongo
+// list all MongoDB databases
 show dbs
