@@ -7,18 +7,11 @@ Module that updates the topics of a school document
 def update_topics(mongo_collection, name, topics):
     """
     Updates all topics of a school document based on the name
-
-    Args:
-        mongo_collection (pymongo.collection.Collection): Collection object
-        name (str): Name of the school to update
-        topics (list): List of topics to set
-
-    Returns:
-        None
     """
     if mongo_collection is None or not name or not isinstance(topics, list):
         return
+    # Update only the topics field without touching other fields
     mongo_collection.update_one(
-        { "name": name },
-        { "$set": { "topics": topics } }
+        {"name": name},
+        {"$set": {"topics": topics}}
     )
