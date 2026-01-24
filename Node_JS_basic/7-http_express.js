@@ -1,7 +1,6 @@
 const express = require('express');
 const fs = require('fs');
 
-const app = express();
 function countStudents(path) {
   return new Promise((resolve, reject) => {
     fs.readFile(path, 'utf-8', (err, data) => {
@@ -29,20 +28,24 @@ function countStudents(path) {
     });
   });
 }
+
+const app = express();
+
 app.get('/', (req, res) => {
   res.send('Hello Holberton School!');
 });
+
 app.get('/students', async (req, res) => {
   const dbFile = process.argv[2];
-  let responseText = 'This is the list of our students\n';
+  res.write('This is the list of our students\n');
   try {
-    const studentsInfo = await countStudents(dbFile);
-    responseText += studentsInfo;
-    res.send(responseText);
+    const output = await countStudents(dbFile);
+    res.end(output);
   } catch (err) {
-    res.send(err.message);
+    res.end(err.message);
   }
 });
+
 app.listen(1245);
 
 module.exports = app;
