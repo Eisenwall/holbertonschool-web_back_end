@@ -1,4 +1,5 @@
-import { readDatabase } from '../utils.js';
+// full_server/controllers/StudentsController.js
+import readDatabase from '../utils';
 
 export default class StudentsController {
   static async getAllStudents(req, res) {
@@ -6,9 +7,11 @@ export default class StudentsController {
     try {
       const data = await readDatabase(dbFile);
       let output = 'This is the list of our students\n';
-      Object.keys(data).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+      Object.keys(data)
+        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
         .forEach((field) => {
-          output += `Number of students in ${field}: ${data[field].length}. List: ${data[field].join(', ')}\n`;
+          const { [field]: students } = data;
+          output += `Number of students in ${field}: ${students.length}. List: ${students.join(', ')}\n`;
         });
       res.status(200).send(output.trim());
     } catch (err) {
@@ -18,14 +21,15 @@ export default class StudentsController {
 
   static async getAllStudentsByMajor(req, res) {
     const dbFile = process.argv[2];
-    const major = req.params.major;
+    const { major } = req.params;
     if (!['CS', 'SWE'].includes(major)) {
       res.status(500).send('Major parameter must be CS or SWE');
       return;
     }
     try {
       const data = await readDatabase(dbFile);
-      res.status(200).send(`List: ${data[major].join(', ')}`);
+      const { [major]: students } = data;
+      res.status(200).send(`List: ${students.join(', ')}`);
     } catch (err) {
       res.status(500).send(err.message);
     }
