@@ -8,32 +8,21 @@ function countStudents(path) {
     throw new Error('Cannot load the database');
   }
 
-  const lines = data
-    .split('\n')
-    .filter((line) => line.trim() !== '');
-
-  const students = lines.slice(1); // убираем заголовок
+  const lines = data.split('\n').filter((line) => line.trim() !== '');
+  const students = lines.slice(1);
 
   console.log(`Number of students: ${students.length}`);
-
   const fields = {};
-
-  students.forEach((line) => {
-    const parts = line.split(',');
-    const firstname = parts[0];
-    const field = parts[3];
-
+  students.forEach((student) => {
+    const [firstname, , , field] = student.split(',');
     if (!fields[field]) {
       fields[field] = [];
     }
     fields[field].push(firstname);
   });
-
-  Object.keys(fields).forEach((field) => {
-    console.log(
-      `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`
-    );
-  });
+  for (const field of Object.keys(fields)) {
+    console.log(`Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`);
+  }
 }
 
 module.exports = countStudents;
